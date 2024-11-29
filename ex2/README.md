@@ -1,4 +1,4 @@
-# Exercise 1
+# Exercise 2
 
 # Data Sets
 
@@ -8,8 +8,19 @@ python download_datasets.py
 ```
 
 ## Bike Sharing
-
 https://archive.ics.uci.edu/dataset/275/bike+sharing+dataset
+
+The Bike Sharing Dataset provides historical data from a bike-sharing system, capturing variables such as weather conditions, seasonality, and time-related features like holidays and weekdays, along with the frequency of bike rentals. The objective of this regression task is to predict the demand for the bike-sharing system based on these features (environmental settings), enabling better insights into rental patterns and system load.
+
+Bike-sharing rental process is highly correlated to the environmental and seasonal settings. For instance, weather conditions, precipitation, day of week, season, hour of the day, etc. can affect the rental behaviors.
+
+Dimensions: 13
+Instances: 17.389
+Missing Values: No
+
+Target Attribute
+The target attribute is the count of total rental bikes, cnt. For the dataset that contains hourly data, this attribute ranges from 1 to 977. For the dataset that contains daily data, this attribute ranges from 22 to 8714.
+
 
 ## Online News Popularity
 
