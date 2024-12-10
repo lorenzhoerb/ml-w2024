@@ -26,8 +26,7 @@ class RegressionTree:
 
     def fit(self, X: pd.DataFrame, y: pd.Series):
         self._validate_inputs(X, y)
-        root = self._create_tree(X.to_numpy(), y.to_numpy(), 0)
-        self._root = root
+        self._root = self._create_tree(X.to_numpy(), y.to_numpy(), depth=0)
         self._is_fitted = True
 
     def predict(self, X: pd.DataFrame) -> pd.Series:
