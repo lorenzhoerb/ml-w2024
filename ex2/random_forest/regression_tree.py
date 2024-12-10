@@ -65,7 +65,7 @@ class RegressionTree:
         x_left, y_left, x_right, y_right = self._split(X, y, int(best_split_feature_index), threshold)
 
         left_tree = self._create_tree(x_left, y_left, depth + 1)
-        right_tree = self._create_tree(x_left, y_left, depth + 1)
+        right_tree = self._create_tree(x_right, y_right, depth + 1)
         return Node(threshold=threshold, left=left_tree, right=right_tree, feature_index=int(best_split_feature_index))
 
     def _find_best_split(self, X: np.ndarray, y: np.ndarray) -> tuple[float, float]:
