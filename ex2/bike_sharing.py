@@ -36,7 +36,7 @@ regressor.fit(X_train, Y_train)
 
 # predict
 Y_pred = regressor.predict(X_test)
-# print("Mean squared error: ", mean_squared_error(Y_test, Y_pred))
+print("Mean squared error: ", mean_squared_error(Y_test, Y_pred))
 print("Actual | Predicted")
 print("--------------------")
 i = 0

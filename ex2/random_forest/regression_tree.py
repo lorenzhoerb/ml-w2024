@@ -33,16 +33,17 @@ class RegressionTree:
         if self._is_fitted is False:
             raise Exception("Tree is not fitted yet.")
         self._validate_X(X)
-        predictions = [self.make_prediction(x, self._root) for x in X]
+        predictions = np.array([self.make_prediction(x, self._root) for x in X])
         return predictions
 
     def make_prediction(self, X: np.ndarray, tree):
-        if tree.value is not None : return tree.value # reached leaf node
+        if tree.value is not None :
+            return tree.value # reached leaf node
         X_value = X[tree.feature_index]
         if X_value <= tree.threshold:
-            self.make_prediction(X, tree.left)
+            return self.make_prediction(X, tree.left)
         else:
-            self.make_prediction(X, tree.right)
+            return self.make_prediction(X, tree.right)
 
     def _create_tree(self, X: np.ndarray, y: np.ndarray, depth: int) -> Node:
         """Creates the decision tree recursively. Stop if split criteria is reached. depth >= max_depth or min_nodes is not reached."""
