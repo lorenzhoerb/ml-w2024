@@ -33,15 +33,16 @@ class RegressionTree:
         if self._is_fitted is False:
             raise Exception("Tree is not fitted yet.")
         self._validate_X(X)
-        predictions = []
-        for x in X:
-            if self.value is not None : predictions.append(self.value) # reached leaf node
-            x_value = x[self.feature_index]
-            if x_value <= self.threshold:
-                self.predict(self.left)
-            else:
-                self.predict(self.right)
-        return np.array(predictions)
+        predictions = [self.make_prediction(x, self._root) for x in X]
+        return predictions
+
+    def make_prediction(self, X: np.ndarray, tree):
+        if tree.value is not None : return tree.value # reached leaf node
+        X_value = X[tree.feature_index]
+        if X_value <= tree.threshold:
+            self.make_prediction(X, tree.left)
+        else:
+            self.make_prediction(X, tree.right)
 
     def _create_tree(self, X: np.ndarray, y: np.ndarray, depth: int) -> Node:
         """Creates the decision tree recursively. Stop if split criteria is reached. depth >= max_depth or min_nodes is not reached."""
@@ -129,12 +130,12 @@ class RegressionTree:
         """Validate that X is a numpy array and contains only numeric values."""
         if not isinstance(X, np.ndarray):
             raise TypeError("X must be a numpy array.")
-        if not np.all(np.isreal(X)):
+        if X.dtype == object or X.dtype == np.bool or X.dtype == str:
             raise ValueError("All values in X must be numeric.")
 
     def _validate_y(self, y: np.ndarray):
         """Validate that y is a numpy array and contains only numeric values."""
         if not isinstance(y, np.ndarray):
-            raise TypeError("y must be a pandas Series.")
-        if not np.all(np.isreal(y)):
+            raise TypeError("y must be a numpy array.")
+        if y.dtype == object or y.dtype == np.bool or y.dtype == str:
             raise ValueError("All values in y must be numeric.")
