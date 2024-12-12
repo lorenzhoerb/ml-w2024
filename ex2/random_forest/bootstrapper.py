@@ -1,4 +1,4 @@
-import pandas as pd
+import numpy as np
 
-def bootstrap(data_set: pd.DataFrame) -> pd.DataFrame:
-    pass
+def bootstrap(data_set: np.ndarray) -> np.ndarray:
+    n_samples, n_features = np.shape(data_set)

@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 
 from random_forest.loss import LossFunction, RSSLoss
