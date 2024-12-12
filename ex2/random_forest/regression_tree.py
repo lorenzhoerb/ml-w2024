@@ -14,11 +14,19 @@ class Node:
 
 
 class RegressionTree:
+    DEFAULT_LOSS_FUNCTION = RSSLoss()
+    DEFAULT_MIN_NODES = 2
+    DEFAULT_MAX_DEPTH = 10
+
     def __init__(self, loss_function: LossFunction = None, min_nodes: int = 2, max_depth: int = 10):
         if loss_function is None:
-            loss_function = RSSLoss()  # Default loss function
+            loss_function = RegressionTree.DEFAULT_LOSS_FUNCTION
         self.loss_function = loss_function
+        if min_nodes is None:
+            min_nodes = RegressionTree.DEFAULT_MIN_NODES
         self.min_nodes = min_nodes
+        if max_depth is None:
+            max_depth = RegressionTree.DEFAULT_MAX_DEPTH
         self.max_depth = max_depth
         self._is_fitted = False
         self._root = None
