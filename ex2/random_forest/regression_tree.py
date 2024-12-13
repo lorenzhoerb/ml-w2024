@@ -19,7 +19,8 @@ class RegressionTree:
     DEFAULT_MIN_NODES = 2
     DEFAULT_MAX_DEPTH = 10
     DEFAULT_MIN_SAMPLES_LEAF = 1
-    RANDOM_FEATURE_NUMBER_RATIO = 1/3 # internet says 1/3 is good, but the results were horrible (probably due to low feature number of original test dataset)
+    RANDOM_FEATURE_NUMBER_RATIO = 1/3 
+    
 
     def __init__(self, 
                  loss_function: LossFunction = DEFAULT_LOSS_FUNCTION, 
@@ -110,15 +111,8 @@ class RegressionTree:
                                  The loss is the value of the loss function at that threshold.
                                  The feature index is the index of the feature according to the input X.
         """
-        random_feature_indexes = RegressionTree._select_random_feature_indexes(X)
-        # best_feature_losses = [[self._find_best_split(x_feature, y)] 
-        #                        for x_feature 
-        #                        in X.T[random_feature_indexes]]
-        
-        # best_feature_losses = []
-        # for feature_index in random_features_to_select:
-        #     threshold, loss = self._find_best_split(X.T[feature_index], y)
-        #     best_feature_losses.append([feature_index, threshold, loss])
+        random_feature_indexes = self._select_random_feature_indexes(X)
+
         best_feature_losses = [
             [feature_index, *self._find_best_split_for_a_feature(X.T[feature_index], y)]
             for feature_index
@@ -136,7 +130,7 @@ class RegressionTree:
 
         return (int(best_feature_index), threshold, loss)
 
-    def _select_random_feature_indexes(X: np.ndarray) -> list:
+    def _select_random_feature_indexes(self, X: np.ndarray) -> list:
         number_of_features = X.shape[1]
         if number_of_features == 0:
             return []
