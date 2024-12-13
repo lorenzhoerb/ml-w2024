@@ -1,7 +1,6 @@
-import pandas as pd
 import numpy as np
 
-from ex2.random_forest.loss import LossFunction, RSSLoss
+from random_forest.loss import LossFunction, RSSLoss
 
 
 class Node:
@@ -24,17 +23,26 @@ class RegressionTree:
         self._is_fitted = False
         self._root = None
 
-    def fit(self, X: pd.DataFrame, y: pd.Series):
+    def fit(self, X: np.ndarray, y: np.ndarray):
         self._validate_inputs(X, y)
-        self._root = self._create_tree(X.to_numpy(), y.to_numpy(), depth=0)
+        self._root = self._create_tree(X, y, depth=0)
         self._is_fitted = True
 
-    def predict(self, X: pd.DataFrame) -> pd.Series:
+    def predict(self, X: np.ndarray) -> np.ndarray:
         if self._is_fitted is False:
             raise Exception("Tree is not fitted yet.")
         self._validate_X(X)
-        # TODO: implement predict
-        return None
+        predictions = np.array([self.make_prediction(x, self._root) for x in X])
+        return predictions
+
+    def make_prediction(self, X: np.ndarray, tree):
+        if tree.value is not None :
+            return tree.value # reached leaf node
+        X_value = X[tree.feature_index]
+        if X_value <= tree.threshold:
+            return self.make_prediction(X, tree.left)
+        else:
+            return self.make_prediction(X, tree.right)
 
     def _create_tree(self, X: np.ndarray, y: np.ndarray, depth: int) -> Node:
         """Creates the decision tree recursively. Stop if split criteria is reached. depth >= max_depth or min_nodes is not reached."""
@@ -85,7 +93,8 @@ class RegressionTree:
         min_loss = float('inf')  # Initialize the minimum RSS with a very large number
 
         for i in range(len(X) - 1):
-            threshold = X[i:i + 2].mean()  # Calculate the threshold as the mean of x1 and x2
+            #threshold = X[i:i + 2].mean()  # Calculate the threshold as the mean of x1 and x2
+            threshold = np.mean(X[i:i + 1]) # fails when X contains strings, how do strings pass validation?
 
             loss = self.loss_function.calculate(X, y, threshold)  # Calculate loss for the threshold
 
@@ -113,20 +122,20 @@ class RegressionTree:
 
         return x_left, y_left, x_right, y_right
 
-    def _validate_inputs(self, X: pd.DataFrame, y: pd.Series):
+    def _validate_inputs(self, X: np.ndarray, y: np.ndarray):
         self._validate_X(X)
         self._validate_y(y)
 
-    def _validate_X(self, X: pd.DataFrame):
-        """Validate that X is a DataFrame and contains only numeric values."""
-        if not isinstance(X, pd.DataFrame):
-            raise TypeError("X must be a pandas DataFrame.")
-        if not X.applymap(np.isreal).all().all():
+    def _validate_X(self, X: np.ndarray):
+        """Validate that X is a numpy array and contains only numeric values."""
+        if not isinstance(X, np.ndarray):
+            raise TypeError("X must be a numpy array.")
+        if X.dtype == object or X.dtype == np.bool or X.dtype == str:
             raise ValueError("All values in X must be numeric.")
 
-    def _validate_y(self, y: pd.Series):
-        """Validate that y is a Series and contains only numeric values."""
-        if not isinstance(y, pd.Series):
-            raise TypeError("y must be a pandas Series.")
-        if not pd.api.types.is_numeric_dtype(y):
+    def _validate_y(self, y: np.ndarray):
+        """Validate that y is a numpy array and contains only numeric values."""
+        if not isinstance(y, np.ndarray):
+            raise TypeError("y must be a numpy array.")
+        if y.dtype == object or y.dtype == np.bool or y.dtype == str:
             raise ValueError("All values in y must be numeric.")
