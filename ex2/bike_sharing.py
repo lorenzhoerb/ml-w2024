@@ -40,6 +40,6 @@ print("Mean squared error: ", mean_squared_error(Y_test, Y_pred))
 print("Actual | Predicted")
 print("--------------------")
 
-for i in range(Y_test.shape[0]):
+for i in range(Y_test.shape[0])[:10]:
     print(Y_test[i], "|", Y_pred[i])
     #   if Y_pred[i] is None or math.isnan(Y_pred[i]):

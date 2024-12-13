@@ -1,5 +1,5 @@
 import numpy as np
-from math import isnan
+from math import ceil
 
 from random_forest.loss import LossFunction, RSSLoss
 
@@ -19,6 +19,7 @@ class RegressionTree:
     DEFAULT_MIN_NODES = 2
     DEFAULT_MAX_DEPTH = 10
     DEFAULT_MIN_SAMPLES_LEAF = 1
+    RANDOM_FEATURE_NUMBER_RATIO = 99/100
 
     def __init__(self, 
                  loss_function: LossFunction = DEFAULT_LOSS_FUNCTION, 
@@ -84,7 +85,10 @@ class RegressionTree:
         # If splitting is still possible, find best split feature
 
         # For each feature calculate the best split.
-        best_feature_losses = [self._find_best_split(x_feature, y) for x_feature in X.T]
+        X_with_random_features_selected = RegressionTree._select_random_features(X)
+        best_feature_losses = [self._find_best_split(x_feature, y) 
+                               for x_feature 
+                               in X_with_random_features_selected.T]
 
         # Convert to a numpy array to use argmin
         best_feature_losses = np.array(best_feature_losses)
@@ -104,6 +108,22 @@ class RegressionTree:
         left_tree = self._create_tree(x_left, y_left, depth + 1)
         right_tree = self._create_tree(x_right, y_right, depth + 1)
         return Node(threshold=threshold, left=left_tree, right=right_tree, feature_index=int(best_split_feature_index))
+
+    def _select_random_features(X: np.ndarray) -> np.ndarray:
+        number_of_features = X.shape[1]
+        if number_of_features <= 1:
+            return X
+        
+        random_feature_indexes = np.random.choice(
+            range(number_of_features), 
+            size=round(RegressionTree.RANDOM_FEATURE_NUMBER_RATIO * number_of_features),
+            replace=False
+        )
+
+        random_feature_indexes_sorted = sorted(random_feature_indexes)
+
+
+        return X[:, random_feature_indexes_sorted]
 
     def _find_best_split(self, X: np.ndarray, y: np.ndarray) -> tuple[float, float]:
         """
