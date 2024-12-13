@@ -1,5 +1,4 @@
 import numpy as np
-from math import isnan
 
 from random_forest.loss import LossFunction, RSSLoss
 
@@ -19,6 +18,8 @@ class RegressionTree:
     DEFAULT_MIN_NODES = 2
     DEFAULT_MAX_DEPTH = 10
     DEFAULT_MIN_SAMPLES_LEAF = 1
+    RANDOM_FEATURE_NUMBER_RATIO = 1/3 
+
 
     def __init__(self, 
                  loss_function: LossFunction = DEFAULT_LOSS_FUNCTION, 
@@ -75,27 +76,17 @@ class RegressionTree:
         num_samples, num_features = X.shape
 
         # Check if further splitting is possible based on the stopping criteria (depth or minimum samples)
-        if not self._can_split(num_samples, depth):
+        if not self._can_split(num_samples, depth, num_features):
             # If not, calculate the average value of y and create a leaf node with this value
             average_value = np.mean(y)
             
             return Node(value=float(average_value))
 
         # If splitting is still possible, find best split feature
-
-        # For each feature calculate the best split.
-        best_feature_losses = [self._find_best_split(x_feature, y) for x_feature in X.T]
-
-        # Convert to a numpy array to use argmin
-        best_feature_losses = np.array(best_feature_losses)
-
-        # Get the best feature index based on the feature with the lowest loss
-        best_split_feature_index = np.argmin(best_feature_losses[:, 1])
-        # Get best split values for feature feature_index
-        threshold, loss = best_feature_losses[best_split_feature_index]
+        best_feature_index, threshold, loss = self._find_best_split(X, y)
 
         # Split data at threshold
-        x_left, y_left, x_right, y_right = self._split(X, y, int(best_split_feature_index), threshold)
+        x_left, y_left, x_right, y_right = self._split(X, y, best_feature_index, threshold)
 
         if not (self._is_split_valid(x_left) and self._is_split_valid(x_right)):
             average_value = np.mean(y)
@@ -103,9 +94,61 @@ class RegressionTree:
 
         left_tree = self._create_tree(x_left, y_left, depth + 1)
         right_tree = self._create_tree(x_right, y_right, depth + 1)
-        return Node(threshold=threshold, left=left_tree, right=right_tree, feature_index=int(best_split_feature_index))
+        return Node(left=left_tree, right=right_tree, feature_index=best_feature_index, threshold=threshold)
 
-    def _find_best_split(self, X: np.ndarray, y: np.ndarray) -> tuple[float, float]:
+    def _find_best_split(self, X: np.ndarray, y: np.ndarray) -> tuple[int, float, float]:
+        """
+        Find the best feature to split on, it's threshold and loss values.
+
+        Args:
+                X (np.ndarray): A ND array containing features and samples. (Dataset)
+                y (np.ndarray): A 1D array containing the target values.
+
+        Returns:
+            tuple[int, float, float]: A tuple containing the feature index, associated best threshold and the loss values.
+                                 The threshold is the value that minimizes the loss for the given feature.
+                                 The loss is the value of the loss function at that threshold.
+                                 The feature index is the index of the feature according to the input X.
+        """
+        random_feature_indexes = self._select_random_feature_indexes(X)
+
+        best_feature_losses = [
+            [feature_index, *self._find_best_split_for_a_feature(X.T[feature_index], y)]
+            for feature_index
+            in random_feature_indexes
+        ]
+
+        # Convert to a numpy array to use argmin
+        best_feature_losses = np.array(best_feature_losses)
+        # print(best_feature_losses)
+
+        # Get the best feature index based on the feature with the lowest loss
+        best_element_index_of_best_feature_losses = np.argmin(best_feature_losses[:, 2])
+        # Get best split values for feature feature_index
+        best_feature_index, threshold, loss = best_feature_losses[best_element_index_of_best_feature_losses]
+
+        return (int(best_feature_index), threshold, loss)
+
+    def _select_random_feature_indexes(self, X: np.ndarray) -> list:
+        number_of_features = X.shape[1]
+        if number_of_features == 0:
+            return []
+
+        if number_of_features == 1:
+            return [0]
+        
+        random_feature_indexes = np.random.choice(
+            range(number_of_features), 
+            size=round(RegressionTree.RANDOM_FEATURE_NUMBER_RATIO * number_of_features),
+            replace=False
+        )
+
+        return sorted(random_feature_indexes)
+
+
+        # return X[:, random_feature_indexes_sorted]
+
+    def _find_best_split_for_a_feature(self, X: np.ndarray, y: np.ndarray) -> tuple[float, float]:
         """
         Find the best threshold to split a feature based on the given loss function.
 
@@ -135,9 +178,9 @@ class RegressionTree:
 
         return best_split
 
-    def _can_split(self, num_samples: int, depth: int) -> bool:
+    def _can_split(self, num_samples: int, depth: int, num_features) -> bool:
         """checks if split criteria is reached."""
-        return num_samples >= self._min_nodes and depth <= self._max_depth
+        return num_samples >= self._min_nodes and depth <= self._max_depth and num_features >= 1
 
     def _is_split_valid(self, split: np.ndarray) -> bool:
         return len(split) >= self._min_samples_leaf
