@@ -1,5 +1,4 @@
 import numpy as np
-from math import ceil
 
 from random_forest.loss import LossFunction, RSSLoss
 
@@ -20,7 +19,7 @@ class RegressionTree:
     DEFAULT_MAX_DEPTH = 10
     DEFAULT_MIN_SAMPLES_LEAF = 1
     RANDOM_FEATURE_NUMBER_RATIO = 1/3 
-    
+
 
     def __init__(self, 
                  loss_function: LossFunction = DEFAULT_LOSS_FUNCTION, 
