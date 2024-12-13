@@ -1,6 +1,5 @@
 from typing import List
 import numpy as np
-import random
 
 from .regression_tree import RegressionTree
 
@@ -24,16 +23,13 @@ class RandomForestRegressor:
 
     def _bootstrap(self, X: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         """
-        Take random slice of samples and features
+        Create random subsample of X and y with replacement that's ~60% of the original size
         """
-        n_samples, n_features = X.shape
-        random.seed(self.random_state)
-        samples_start_i = random.randint(0, n_samples)
-        features_start_i = random.randint(0, n_features)
-        samples_end_i = random.randint(samples_start_i, n_samples)
-        features_end_i = random.randint(features_start_i, n_features)
+        np.random.RandomState(self.random_state)
+        n_samples = X.shape[0]
+        subsample_index = np.random.choice(n_samples, int(n_samples * 0.6), replace=True)
         
-        return X[samples_start_i:samples_end_i, features_start_i:features_end_i], y[samples_start_i:samples_end_i]
+        return X[subsample_index], y[subsample_index]
 
     def _fit_tree(self, X: np.ndarray, y: np.ndarray) -> RegressionTree:
         # Create a regression tree and train it
