@@ -12,8 +12,6 @@ class Node:
         self.left = left
         self.right = right
         self.feature_index = feature_index
-        # if (self.value is not None and isnan(self.value)):
-            # print("asdasd")
 
 
 class RegressionTree:
@@ -23,26 +21,14 @@ class RegressionTree:
     DEFAULT_MIN_SAMPLES_LEAF = 1
 
     def __init__(self, 
-                 loss_function: LossFunction = None, 
-                 min_nodes: int = None, 
-                 max_depth: int = None, 
-                 min_samples_leaf: int = None):
-        if loss_function is None:
-            loss_function = RegressionTree.DEFAULT_LOSS_FUNCTION
+                 loss_function: LossFunction = DEFAULT_LOSS_FUNCTION, 
+                 min_nodes: int = DEFAULT_MIN_NODES, 
+                 max_depth: int = DEFAULT_MAX_DEPTH, 
+                 min_samples_leaf: int = DEFAULT_MIN_SAMPLES_LEAF):
         self.loss_function = loss_function
-        
-        if min_nodes is None:
-            min_nodes = RegressionTree.DEFAULT_MIN_NODES
         self._min_nodes = min_nodes
-        
-        if max_depth is None:
-            max_depth = RegressionTree.DEFAULT_MAX_DEPTH
         self._max_depth = max_depth
-        
-        if min_samples_leaf is None:
-            min_samples_leaf = RegressionTree.DEFAULT_MIN_SAMPLES_LEAF
         self._min_samples_leaf = min_samples_leaf
-        
         self._is_fitted = False
         self._root = None
 
@@ -55,7 +41,6 @@ class RegressionTree:
         if self._is_fitted is False:
             raise Exception("Tree is not fitted yet.")
         self._validate_X(X)
-        # print([self.make_prediction(x, self._root) for x in X][:5])
         predictions = np.array([self.make_prediction(x, self._root) for x in X])
         return predictions
 
@@ -77,7 +62,6 @@ class RegressionTree:
 
     def make_prediction(self, X: np.ndarray, tree):
         if tree.value is not None :
-            # print(tree.value, type(tree.value))
             return tree.value # reached leaf node
         X_value = X[tree.feature_index]
         if X_value <= tree.threshold:
@@ -94,9 +78,7 @@ class RegressionTree:
         if not self._can_split(num_samples, depth):
             # If not, calculate the average value of y and create a leaf node with this value
             average_value = np.mean(y)
-            if (isnan(average_value)):
-                print("NAN", average_value, y)
-            # print(average_value, np)
+            
             return Node(value=float(average_value))
 
         # If splitting is still possible, find best split feature

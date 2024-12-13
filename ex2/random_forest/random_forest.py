@@ -6,7 +6,16 @@ from .regression_tree import RegressionTree
 
 
 class RandomForestRegressor:
-    def __init__(self, tree_max_depth: int = None, n_trees: int = 100, tree_min_nodes: int = 2, random_state: int = 0):
+    DEFAULT_TREE_MAX_DEPTH = RegressionTree.DEFAULT_MAX_DEPTH
+    DEFAULT_N_TREES = 100
+    DEFAULT_TREE_MIN_NODES = RegressionTree.DEFAULT_MIN_NODES
+    DEFAULT_RANDOM_STATE = 0
+
+    def __init__(self, 
+                 tree_max_depth: int = DEFAULT_TREE_MAX_DEPTH, 
+                 n_trees: int = DEFAULT_N_TREES, 
+                 tree_min_nodes: int = DEFAULT_TREE_MIN_NODES, 
+                 random_state: int = DEFAULT_RANDOM_STATE):
         self.random_state = random_state
         self.n_trees = n_trees
         self.tree_max_depth = tree_max_depth

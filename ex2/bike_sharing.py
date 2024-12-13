@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from random_forest.decision_tree import DecisionTree
+from sklearn.tree import DecisionTreeRegressor as RegressionTree_sklearn
 from random_forest.regression_tree import RegressionTree
 
 data = pd.read_csv("data/bike_sharing/day.csv")
@@ -12,7 +13,8 @@ Y = data.iloc[:, -1].values.reshape(-1,1)
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
 
 # train - sklearn
-regressor = DecisionTree(min_samples_split=20, max_depth=10)
+# regressor = DecisionTree(min_samples_split=20, max_depth=10)
+regressor = RegressionTree_sklearn(min_samples_split=20, max_depth=10)
 regressor.fit(X_train, Y_train)
 # regressor.print_tree()
 
@@ -29,7 +31,7 @@ while i < 10:
 print("---------- Custom Solution ----------")
 
 # train
-regressor = RegressionTree(min_nodes=2, max_depth=10)
+regressor = RegressionTree(min_nodes=20, max_depth=10)
 regressor.fit(X_train, Y_train)
 # regressor.print_tree()
 

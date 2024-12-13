@@ -29,7 +29,7 @@ while i < 10:
 print("---------- Custom Solution ----------")
 
 # train
-regressor = RandomForestRegressor(tree_min_nodes=2, tree_max_depth=10)
+regressor = RandomForestRegressor(tree_min_nodes=20, tree_max_depth=10)
 regressor.fit(X_train, Y_train)
 # regressor.print_tree()
 
