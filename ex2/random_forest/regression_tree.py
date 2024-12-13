@@ -1,4 +1,5 @@
 import numpy as np
+from math import isnan
 
 from random_forest.loss import LossFunction, RSSLoss
 
@@ -11,23 +12,37 @@ class Node:
         self.left = left
         self.right = right
         self.feature_index = feature_index
+        # if (self.value is not None and isnan(self.value)):
+            # print("asdasd")
 
 
 class RegressionTree:
     DEFAULT_LOSS_FUNCTION = RSSLoss()
     DEFAULT_MIN_NODES = 2
     DEFAULT_MAX_DEPTH = 10
+    DEFAULT_MIN_SAMPLES_LEAF = 1
 
-    def __init__(self, loss_function: LossFunction = None, min_nodes: int = 2, max_depth: int = 10):
+    def __init__(self, 
+                 loss_function: LossFunction = None, 
+                 min_nodes: int = None, 
+                 max_depth: int = None, 
+                 min_samples_leaf: int = None):
         if loss_function is None:
             loss_function = RegressionTree.DEFAULT_LOSS_FUNCTION
         self.loss_function = loss_function
+        
         if min_nodes is None:
             min_nodes = RegressionTree.DEFAULT_MIN_NODES
-        self.min_nodes = min_nodes
+        self._min_nodes = min_nodes
+        
         if max_depth is None:
             max_depth = RegressionTree.DEFAULT_MAX_DEPTH
-        self.max_depth = max_depth
+        self._max_depth = max_depth
+        
+        if min_samples_leaf is None:
+            min_samples_leaf = RegressionTree.DEFAULT_MIN_SAMPLES_LEAF
+        self._min_samples_leaf = min_samples_leaf
+        
         self._is_fitted = False
         self._root = None
 
@@ -40,11 +55,29 @@ class RegressionTree:
         if self._is_fitted is False:
             raise Exception("Tree is not fitted yet.")
         self._validate_X(X)
+        # print([self.make_prediction(x, self._root) for x in X][:5])
         predictions = np.array([self.make_prediction(x, self._root) for x in X])
         return predictions
 
+    def print_tree(self, tree=None, indent=" "):
+        """ function to print the tree """
+
+        if not tree:
+            tree = self._root
+
+        if tree.value is not None:
+            print(tree.value)
+
+        else:
+            print("X_"+str(tree.feature_index), "<=", tree.threshold)
+            print("%sleft:" % indent, end="")
+            self.print_tree(tree.left, indent + indent[0])
+            print("%sright:" % indent, end="")
+            self.print_tree(tree.right, indent + indent[0])
+
     def make_prediction(self, X: np.ndarray, tree):
         if tree.value is not None :
+            # print(tree.value, type(tree.value))
             return tree.value # reached leaf node
         X_value = X[tree.feature_index]
         if X_value <= tree.threshold:
@@ -61,6 +94,9 @@ class RegressionTree:
         if not self._can_split(num_samples, depth):
             # If not, calculate the average value of y and create a leaf node with this value
             average_value = np.mean(y)
+            if (isnan(average_value)):
+                print("NAN", average_value, y)
+            # print(average_value, np)
             return Node(value=float(average_value))
 
         # If splitting is still possible, find best split feature
@@ -78,6 +114,10 @@ class RegressionTree:
 
         # Split data at threshold
         x_left, y_left, x_right, y_right = self._split(X, y, int(best_split_feature_index), threshold)
+
+        if not (self._is_split_valid(x_left) and self._is_split_valid(x_right)):
+            average_value = np.mean(y)
+            return Node(value=float(average_value))
 
         left_tree = self._create_tree(x_left, y_left, depth + 1)
         right_tree = self._create_tree(x_right, y_right, depth + 1)
@@ -115,7 +155,10 @@ class RegressionTree:
 
     def _can_split(self, num_samples: int, depth: int) -> bool:
         """checks if split criteria is reached."""
-        return num_samples >= self.min_nodes and depth <= self.max_depth
+        return num_samples >= self._min_nodes and depth <= self._max_depth
+
+    def _is_split_valid(self, split: np.ndarray) -> bool:
+        return len(split) >= self._min_samples_leaf
 
     def _split(self, X: np.ndarray, y: np.ndarray, feature_index: int, threshold: float) -> tuple[
         np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
