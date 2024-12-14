@@ -27,7 +27,7 @@ class RandomForestRegressor:
         """
         np.random.RandomState(self.random_state)
         n_samples = X.shape[0]
-        subsample_index = np.random.choice(n_samples, int(n_samples * 0.6), replace=True)
+        subsample_index = np.random.choice(n_samples, n_samples, replace=True)
         
         return X[subsample_index], y[subsample_index]
 
