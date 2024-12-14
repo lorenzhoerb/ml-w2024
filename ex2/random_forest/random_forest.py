@@ -2,7 +2,7 @@ from typing import List
 import numpy as np
 
 from .regression_tree import RegressionTree
-
+from sklearn.base import BaseEstimator
 
 class RandomForestRegressor:
     DEFAULT_TREE_MAX_DEPTH = RegressionTree.DEFAULT_MAX_DEPTH
@@ -43,6 +43,7 @@ class RandomForestRegressor:
             X_sample, y_sample = self._bootstrap(X, y)
             tree = self._fit_tree(X_sample, y_sample)
             self.trees.append(tree)
+            print(1)
 
     def _majority_prediction(self, x: np.ndarray) -> np.ndarray:
         # print([tree.predict(x) for tree in self.trees])
