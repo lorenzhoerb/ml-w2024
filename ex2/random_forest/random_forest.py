@@ -9,19 +9,19 @@ class RandomForestRegressor:
     DEFAULT_N_TREES = 100
     DEFAULT_TREE_MIN_NODES = RegressionTree.DEFAULT_MIN_NODES
     DEFAULT_RANDOM_STATE = 0
-    DEFAULT_BOOTSTRAP_SAMPLE_SIZE = 1.0
+    DEFAULT_MAX_SAMPLE = 1.0
 
     def __init__(self, 
                  tree_max_depth: int = DEFAULT_TREE_MAX_DEPTH, 
                  n_trees: int = DEFAULT_N_TREES, 
                  tree_min_nodes: int = DEFAULT_TREE_MIN_NODES, 
                  random_state: int = DEFAULT_RANDOM_STATE,
-                 bootstrap_sample_size: float = DEFAULT_BOOTSTRAP_SAMPLE_SIZE):
+                 max_sample: float = DEFAULT_MAX_SAMPLE):
         self.random_state = random_state
         self.n_trees = n_trees
         self.tree_max_depth = tree_max_depth
         self.tree_min_nodes = tree_min_nodes
-        self.bootstrap_sample_size = bootstrap_sample_size
+        self.max_sample = max_sample
         self.trees: List[RegressionTree] = []
 
     def _bootstrap(self, X: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -30,7 +30,7 @@ class RandomForestRegressor:
         """
         np.random.RandomState(self.random_state)
         n_samples = X.shape[0]
-        subsample_index = np.random.choice(n_samples, int(n_samples * self.bootstrap_sample_size), replace=True)
+        subsample_index = np.random.choice(n_samples, int(n_samples * self.max_sample), replace=True)
         
         return X[subsample_index], y[subsample_index]
 
