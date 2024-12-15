@@ -43,7 +43,6 @@ class RandomForestRegressor:
             X_sample, y_sample = self._bootstrap(X, y)
             tree = self._fit_tree(X_sample, y_sample)
             self.trees.append(tree)
-            print(1)
 
     def _majority_prediction(self, x: np.ndarray) -> np.ndarray:
         # print([tree.predict(x) for tree in self.trees])
