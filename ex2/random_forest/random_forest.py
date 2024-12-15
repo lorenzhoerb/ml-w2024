@@ -2,7 +2,6 @@ from typing import List
 import numpy as np
 
 from .regression_tree import RegressionTree
-from sklearn.base import BaseEstimator
 
 class RandomForestRegressor:
     DEFAULT_TREE_MAX_DEPTH = RegressionTree.DEFAULT_MAX_DEPTH
