@@ -165,6 +165,16 @@ class RegressionTree:
         best_split = None
         min_loss = float('inf')  # Initialize the minimum RSS with a very large number
 
+        # Pair X and y together and sort based on X values
+        # sorted_pairs = sorted(zip(X, y), key=lambda pair: pair[0])
+
+        # Unzip the sorted pairs back into X and y
+        # X_sorted, y_sorted = zip(*sorted_pairs)
+
+        # Convert them back to numpy arrays if needed
+        # X = np.array(X_sorted)
+        # y = np.array(y_sorted)
+
         for i in range(len(X) - 1):
             #threshold = X[i:i + 2].mean()  # Calculate the threshold as the mean of x1 and x2
             threshold = np.mean(X[i:i + 1]) # fails when X contains strings, how do strings pass validation?

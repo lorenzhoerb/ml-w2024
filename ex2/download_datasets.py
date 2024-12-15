@@ -44,7 +44,7 @@ def main():
     }
 
     # Define the target directory
-    target_dir = os.path.join(Path(__file__).resolve().parent.parent, "data")
+    target_dir = os.path.join(Path(__file__).resolve().parent, "data")
 
     # Download and extract each dataset
     for dataset_name, url in datasets.items():

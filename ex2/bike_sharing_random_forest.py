@@ -1,5 +1,4 @@
 import pandas as pd
-import timeit
 from sklearn.metrics import mean_squared_error
 from sklearn.ensemble import RandomForestRegressor as RandomForestRegressor_sklearn
 from sklearn.model_selection import train_test_split
@@ -12,7 +11,6 @@ X = data.iloc[:, 2:-3].values # exclude instant, casual, and registered
 Y = data.iloc[:, -1].values.reshape(-1,1)
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
 
-start = timeit.default_timer()
 # train - sklearn
 regressor = RandomForestRegressor_sklearn(min_samples_split=20, max_depth=10)
 regressor.fit(X_train, Y_train)
@@ -20,10 +18,6 @@ regressor.fit(X_train, Y_train)
 
 # predict - sklearn
 Y_pred = regressor.predict(X_test)
-end = timeit.default_timer()
-print("Runtime: ", end - start)
-
-# results
 print("Mean squared error: ", mean_squared_error(Y_test, Y_pred))
 print("Actual | Predicted")
 print("--------------------")
@@ -35,17 +29,12 @@ while i < 10:
 print("---------- Custom Solution ----------")
 
 # train
-start = timeit.default_timer()
-regressor = RandomForestRegressor(tree_min_nodes=20, tree_max_depth=10, bootstrap_sample_size=1.0)
+regressor = RandomForestRegressor(tree_min_nodes=20, tree_max_depth=10)
 regressor.fit(X_train, Y_train)
 # regressor.print_tree()
 
 # predict
 Y_pred = regressor.predict(X_test)
-end = timeit.default_timer()
-print("Runtime: ", end - start)
-
-# results
 print("Mean squared error: ", mean_squared_error(Y_test, Y_pred))
 print("Actual | Predicted")
 print("--------------------")

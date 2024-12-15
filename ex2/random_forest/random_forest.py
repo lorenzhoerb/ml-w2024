@@ -26,7 +26,7 @@ class RandomForestRegressor:
 
     def _bootstrap(self, X: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         """
-        Create random subsample of size bootstrap_sample_size from X and y with replacement
+        Create random subsample of size max_sample from X and y with replacement
         """
         np.random.RandomState(self.random_state)
         n_samples = X.shape[0]
@@ -53,4 +53,3 @@ class RandomForestRegressor:
 
     def predict(self, X: np.ndarray) -> np.ndarray:
         return self._majority_prediction(X)
-
