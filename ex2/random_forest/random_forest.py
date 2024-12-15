@@ -3,6 +3,7 @@ import numpy as np
 
 from .regression_tree import RegressionTree
 
+
 class RandomForestRegressor:
     DEFAULT_TREE_MAX_DEPTH = RegressionTree.DEFAULT_MAX_DEPTH
     DEFAULT_N_TREES = 100
