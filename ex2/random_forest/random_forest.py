@@ -53,4 +53,3 @@ class RandomForestRegressor:
 
     def predict(self, X: np.ndarray) -> np.ndarray:
         return self._majority_prediction(X)
-

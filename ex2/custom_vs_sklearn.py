@@ -8,10 +8,6 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.model_selection import train_test_split, cross_validate
 import time 
 import json
-import numpy as np
-
-# from sklearn.metrics import root_mean_squared_error
-
 from random_forest.random_forest import RandomForestRegressor
 
 def prepare_datasets():
@@ -31,7 +27,7 @@ def prepare_datasets():
   }
 
   data = pd.read_csv("data/online_news_popularity/OnlineNewsPopularity/OnlineNewsPopularity.csv")
-  X = data.iloc[:200, 1:-1].values # exclude instant, casual, and registered
+  X = data.iloc[:200, 1:-1].values
   Y = data.iloc[:200, -1].values.reshape(-1,1)
 
   X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
