@@ -31,9 +31,12 @@ $ pip install -r requirements.txt       # pip
 ### Datasets
 
 You will need six datasets to perform all experiments in the paper, all extracted into the `data/` directory.
+ * Victim datasets for ML Exercise
+   * CUB-200-2011 ([Link](http://www.vision.caltech.edu/visipedia/CUB-200-2011.html). Images in `data/CUB_200_2011/images/<classname>/*.jpg`)
+   * Pokemon ([Link](https://www.kaggle.com/datasets/noodulz/pokemon-dataset-1000). Images in `data/pokemon-dataset-1000/(train|test|val)/<classname>/*.jpg`)
+   * Emotion ([Link](https://www.kaggle.com/datasets/sujaykapadnis/emotion-recognition-dataset). Images in `data/emotion_dataset/dataset/<classname>/*.jpg`)
  * Victim datasets
    * Caltech256 ([Link](http://www.vision.caltech.edu/Image_Datasets/Caltech256/). Images in `data/256_ObjectCategories/<classname>/*.jpg`)
-   * CUB-200-2011 ([Link](http://www.vision.caltech.edu/visipedia/CUB-200-2011.html). Images in `data/CUB_200_2011/images/<classname>/*.jpg`)
    * Indoor Scenes ([Link](http://web.mit.edu/torralba/www/indoor.html). Images in `data/indoor/Images/<classname>/*.jpg`)
    * Diabetic Retinopathy ([Link](https://www.kaggle.com/c/diabetic-retinopathy-detection). Images in `data/diabetic_retinopathy/training_imgs/<classname>/*.jpg`)
  * Adversarial datasets

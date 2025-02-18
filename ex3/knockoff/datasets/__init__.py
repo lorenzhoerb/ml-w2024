@@ -13,6 +13,8 @@ from knockoff.datasets.imagenet1k import ImageNet1k
 from knockoff.datasets.indoor67 import Indoor67
 from knockoff.datasets.mnistlike import MNIST, KMNIST, EMNIST, EMNISTLetters, FashionMNIST
 from knockoff.datasets.tinyimagenet200 import TinyImageNet200
+from knockoff.datasets.emotion import EmotionDataset
+from knockoff.datasets.pokemon import PokemonDataset
 
 
 # Source: https://discuss.pytorch.org/t/is-there-anyway-to-do-gaussian-filtering-for-an-image-2d-3d-in-pytorch/12351/11
@@ -61,6 +63,8 @@ dataset_to_modelfamily = {
     'Diabetic5': 'imagenet',
     'ImageNet1k': 'imagenet',
     'ImageFolder': 'imagenet',
+    'EmotionDataset': 'imagenet',
+    'PokemonDataset': 'imagenet',
 }
 
 modelfamily_to_mean_std = {
