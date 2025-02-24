@@ -18,7 +18,7 @@ $ pip install -r requirements.txt
 
 You will need four datasets to perform all experiments for this exericse, all extracted into the `data/` directory.
 * Victim datasets
-    * CUB-200-2011 ([Link](http://www.vision.caltech.edu/visipedia/CUB-200-2011.html). Images in `data/CUB_200_2011/images/<classname>/*.jpg`)
+    * CUB-200-2011 ([Link](https://data.caltech.edu/records/65de6-vp158). Images in `data/CUB_200_2011/images/<classname>/*.jpg`)
     * Pokemon ([Link](https://www.kaggle.com/datasets/noodulz/pokemon-dataset-1000). Images in `data/pokemon-dataset-1000/(train|test|val)/<classname>/*.jpg`)
     * Emotion ([Link](https://www.kaggle.com/datasets/sujaykapadnis/emotion-recognition-dataset). Images in `data/emotion_dataset/dataset/<classname>/*.jpg`)
 * Adversarial datasets (only if you want PA!=PV)
