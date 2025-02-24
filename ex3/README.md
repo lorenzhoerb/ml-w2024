@@ -2,13 +2,12 @@
 
 - Artem
 - Lorenz
-- Kayzer
+- Kyzer
 
 ## Getting Started
 
 ### Environment
-* Python 3.6
-* Pytorch 1.1
+* Python 3.9
 
 Can be set up as:
 ```bash
