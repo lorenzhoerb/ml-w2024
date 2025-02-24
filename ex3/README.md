@@ -20,9 +20,12 @@ You will need four datasets to perform all experiments for this exericse, all ex
 * Victim datasets
     * CUB-200-2011 ([Link](https://data.caltech.edu/records/65de6-vp158). Images in `data/CUB_200_2011/images/<classname>/*.jpg`)
     * Pokemon ([Link](https://www.kaggle.com/datasets/noodulz/pokemon-dataset-1000). Images in `data/pokemon-dataset-1000/(train|test|val)/<classname>/*.jpg`)
-    * Emotion ([Link](https://www.kaggle.com/datasets/sujaykapadnis/emotion-recognition-dataset). Images in `data/emotion_dataset/dataset/<classname>/*.jpg`)
+    * Emotion (look below on how to set it up) ([Link](https://www.kaggle.com/datasets/sujaykapadnis/emotion-recognition-dataset). Images in `data/emotion_dataset/dataset/<classname>/*.jpg`)
 * Adversarial datasets (only if you want PA!=PV)
     * ImageNet ILSVRC 2012 ([Link](http://image-net.org/download-images). Images in `data/ILSVRC2012/training_imgs/<classname>/*.jpg`)
+
+#### Emotion Dataset Setup
+After unzipping it, remove the "Ahegao" directory and replace `data.csv` file with the `emotion-updated-data.csv` found in root directory of this project and name it `data.csv`.
 
 ## Attack: Overview
 
