@@ -1,4 +1,100 @@
-# Knockoff Nets: Stealing Functionality of Black-Box Models, CVPR '19
+# Exercise 3
+
+- Artem
+- Lorenz
+- Kayzer
+
+## Getting Started
+
+### Environment
+* Python 3.6
+* Pytorch 1.1
+
+Can be set up as:
+```bash
+$ pip install -r requirements.txt
+```
+
+### Datasets
+
+You will need four datasets to perform all experiments for this exericse, all extracted into the `data/` directory.
+* Victim datasets
+    * CUB-200-2011 ([Link](http://www.vision.caltech.edu/visipedia/CUB-200-2011.html). Images in `data/CUB_200_2011/images/<classname>/*.jpg`)
+    * Pokemon ([Link](https://www.kaggle.com/datasets/noodulz/pokemon-dataset-1000). Images in `data/pokemon-dataset-1000/(train|test|val)/<classname>/*.jpg`)
+    * Emotion ([Link](https://www.kaggle.com/datasets/sujaykapadnis/emotion-recognition-dataset). Images in `data/emotion_dataset/dataset/<classname>/*.jpg`)
+* Adversarial datasets (only if you want PA!=PV)
+    * ImageNet ILSVRC 2012 ([Link](http://image-net.org/download-images). Images in `data/ILSVRC2012/training_imgs/<classname>/*.jpg`)
+
+## Attack: Overview
+
+The commands/steps below will guide you to:
+1. Train victim models (or download pretrained models)
+1. Train knockoff models (or download pretrained models)
+    1. Constructing transfer sets
+    1. Training knockoff models
+
+### Train Victim Models
+
+```bash
+# Format:
+$ python knockoff/victim/train.py DS_NAME ARCH -d DEV_ID \
+        -o models/victim/VIC_DIR -e EPOCHS --pretrained
+# where DS_NAME = {cubs200, PokemonDataset, EmotionDataset ARCH = {resnet18, vgg16, densenet161, ...}
+# if the machine contains multiple GPUs, DEV_ID specifies which GPU to use
+
+# More details:
+$ python knockoff/victim/train.py --help
+
+# Example (Pokemon):
+$ python knockoff/victim/train.py PokemonDataset resnet34 -d 1 \
+        -o models/victim/pokemon-resnet34 -e 10 --log-interval 25 \
+        --pretrained imagenet
+```
+
+## Training Knockoff Models
+
+We store the knockoff models and related data (e.g., transfer set, logs) under `data/adversary/P_V-F_A-pi/`  (e.g., `cubs200-resnet50-random`).
+
+### Transfer Set Construction
+
+```bash
+# Format
+$ python knockoff/adversary/transfer.py random models/victim/VIC_DIR \
+        --out_dir models/adversary/ADV_DIR --budget BUDGET \
+        --queryset QUERY_SET --batch_size 8 -d DEV_ID
+# where QUERY_SET = {ImageNet1k ,...}
+
+# More details
+$ python knockoff/adversary/transfer.py --help
+
+# Examples (Pokemon) with QuerySET = PA=PV:
+# Random
+$ python knockoff/adversary/transfer.py random models/victim/pokemon-resnet34 \
+        --out_dir models/adversary/pokemon-2000-resnet34-random --budget 2000 \
+        --queryset PokemonDataset --batch_size 8 -d 2
+```
+
+### Training Knock-offs
+
+```bash
+# Format:
+$ python knockoff/adversary/train.py models/adversary/ADV_DIR ARCH DS_NAME \
+        --budgets BUDGET1,BUDGET2,.. -d DEV_ID --pretrained --epochs EPOCHS \
+        --lr LR
+# DS_NAME refers to the dataset used to train victim model; used only to evaluate on test set during training of knockoff
+
+# More details:
+$ python knockoff/adversary/train.py --help
+
+# Example (Pokemon)
+$ python knockoff/adversary/train.py models/adversary/pokemon-2000-resnet34-random \
+        resnet34 PokemonDataset --budgets 2000 -d 0 --pretrained imagenet \
+        --log-interval 100 --epochs 10 --lr 0.01 
+```
+
+---
+
+# [Original README from Paper] Knockoff Nets: Stealing Functionality of Black-Box Models, CVPR '19
 
 **Tribhuvanesh Orekondy, Bernt Schiele Mario Fritz**
 
