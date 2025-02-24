@@ -32,6 +32,9 @@ The commands/steps below will guide you to:
     1. Constructing transfer sets
     1. Training knockoff models
 
+### Important Note
+Some of us were not able to make the below python commands to run via `python path/to/file.py` approach. Instead, we also used the module approach to it, i.e., `python -m path.to.file`. Below we list both options of how one could run commands. 
+
 ### Train Victim Models
 
 ```bash
@@ -46,6 +49,23 @@ $ python knockoff/victim/train.py --help
 
 # Example (Pokemon):
 $ python knockoff/victim/train.py PokemonDataset resnet34 -d 1 \
+        -o models/victim/pokemon-resnet34 -e 10 --log-interval 25 \
+        --pretrained imagenet
+```
+
+Or (in module notation):
+```bash
+# Format:
+$ python -m knockoff.victim.train DS_NAME ARCH -d DEV_ID \
+        -o models/victim/VIC_DIR -e EPOCHS --pretrained
+# where DS_NAME = {cubs200, PokemonDataset, EmotionDataset ARCH = {resnet18, vgg16, densenet161, ...}
+# if the machine contains multiple GPUs, DEV_ID specifies which GPU to use
+
+# More details:
+$ python -m knockoff.victim.train --help
+
+# Example (Pokemon):
+$ python -m knockoff.victim.train PokemonDataset resnet34 -d 1 \
         -o models/victim/pokemon-resnet34 -e 10 --log-interval 25 \
         --pretrained imagenet
 ```
@@ -73,6 +93,25 @@ $ python knockoff/adversary/transfer.py random models/victim/pokemon-resnet34 \
         --queryset PokemonDataset --batch_size 8 -d 2
 ```
 
+Or (in module notation):
+
+```bash
+# Format
+$ python -m knockoff.adversary.transfer random models/victim/VIC_DIR \
+        --out_dir models/adversary/ADV_DIR --budget BUDGET \
+        --queryset QUERY_SET --batch_size 8 -d DEV_ID
+# where QUERY_SET = {ImageNet1k ,...}
+
+# More details
+$ python -m knockoff.adversary.transfer --help
+
+# Examples (Pokemon) with QuerySET = PA=PV:
+# Random
+$ python -m knockoff.adversary.transfer random models/victim/pokemon-resnet34 \
+        --out_dir models/adversary/pokemon-2000-resnet34-random --budget 2000 \
+        --queryset PokemonDataset --batch_size 8 -d 2
+```
+
 ### Training Knock-offs
 
 ```bash
@@ -87,6 +126,24 @@ $ python knockoff/adversary/train.py --help
 
 # Example (Pokemon)
 $ python knockoff/adversary/train.py models/adversary/pokemon-2000-resnet34-random \
+        resnet34 PokemonDataset --budgets 2000 -d 0 --pretrained imagenet \
+        --log-interval 100 --epochs 10 --lr 0.01 
+```
+
+Or (in module notation):
+
+```bash
+# Format:
+$ python -m knockoff.adversary.train models/adversary/ADV_DIR ARCH DS_NAME \
+        --budgets BUDGET1,BUDGET2,.. -d DEV_ID --pretrained --epochs EPOCHS \
+        --lr LR
+# DS_NAME refers to the dataset used to train victim model; used only to evaluate on test set during training of knockoff
+
+# More details:
+$ python -m knockoff.adversary.train --help
+
+# Example (Pokemon)
+$ python -m knockoff.adversary.train models/adversary/pokemon-2000-resnet34-random \
         resnet34 PokemonDataset --budgets 2000 -d 0 --pretrained imagenet \
         --log-interval 100 --epochs 10 --lr 0.01 
 ```
